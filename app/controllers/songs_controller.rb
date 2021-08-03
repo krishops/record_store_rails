@@ -1,52 +1,51 @@
-class AlbumsController < ApplicationController
-
-  def index
-    @albums = Album.all
-    render :index
-  end
-
+class SongsController < ApplicationController
+  
   def new
-    @album = Album.new
+    @album = Album.find(params[:album_id])
+    @song = @album.songs.new
     render :new
   end
 
   def create
-    @album = Album.new(album_params)
-    if @album.save
-      redirect_to albums_path
+    @album = Album.find(params[:album_id])
+    @song = @album.songs.new(song_params)
+    if @song.save
+      redirect_to album_path(@album)
     else
       render :new
     end
   end
 
-  def edit
-    @album = Album.find(params[:id])
-    render :edit
-  end
-
   def show
-    @album = Album.find(params[:id])
+    @album = Album.find(params[:album_id])
+    @song = Song.find(params[:id])
     render :show
   end
 
+  def edit
+    @album = Album.find(params[:album_id])
+    @song = Song.find(params[:id])
+    render :edit
+  end
+
   def update
-    @album= Album.find(params[:id])
-    if @album.update(album_params)
-      redirect_to albums_path
+    @song = Song.find(params[:id])
+    if @song.update(song_params)
+      redirect_to album_path(@song.album)
     else
+      @album = Album.find(params[:album_id])
       render :edit
     end
   end
 
   def destroy
-    @album = Album.find(params[:id])
-    @album.destroy
-    redirect_to albums_path
+    @song = Song.find(params[:id])
+    @song.destroy
+    redirect_to album_path(@song.album)
   end
 
   private
-  def album_params
-    params.require(:album).permit(:name, :genre)
-  end
-
+    def song_params
+      params.require(:song).permit(:name, :lyrics)
+    end
 end
