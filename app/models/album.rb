@@ -1,6 +1,10 @@
 class Album < ApplicationRecord
   has_many :songs, dependent: :destroy
 
+  has_and_belongs_to_many(:artists)
+
+  scope :rock, -> { where(genre: "Rock") }
+
   validates :name, presence: true
 
   validates_length_of :name, maximum: 100
